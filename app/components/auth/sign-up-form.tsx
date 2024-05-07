@@ -26,13 +26,15 @@ const schema = zod.object({
   firstName: zod.string().min(1, { message: 'First name is required' }),
   lastName: zod.string().min(1, { message: 'Last name is required' }),
   email: zod.string().min(1, { message: 'Email is required' }).email(),
+  phone: zod.string().min(1, { message: 'Phone is required' }),
+  username: zod.string().min(1, { message: 'username required' }),
   password: zod.string().min(6, { message: 'Password should be at least 6 characters' }),
   terms: zod.boolean().refine((value) => value, 'You must accept the terms and conditions'),
 });
 
 type Values = zod.infer<typeof schema>;
 
-const defaultValues = { firstName: '', lastName: '', email: '', password: '', terms: false } satisfies Values;
+const defaultValues = { firstName: '', lastName: '', email: '', password: '',phone: '',username: '', terms: false } satisfies Values;
 
 export function SignUpForm(): React.JSX.Element {
   const router = useRouter();
@@ -124,6 +126,28 @@ export function SignUpForm(): React.JSX.Element {
                 <InputLabel>Password</InputLabel>
                 <OutlinedInput {...field} label="Password" type="password" />
                 {errors.password ? <FormHelperText>{errors.password.message}</FormHelperText> : null}
+              </FormControl>
+            )}
+          />
+          <Controller
+            control={control}
+            name="phone"
+            render={({ field }) => (
+              <FormControl error={Boolean(errors.phone)}>
+                <InputLabel>Phone no.</InputLabel>
+                <OutlinedInput {...field} label="Phone no." />
+                {errors.phone ? <FormHelperText>{errors.phone.message}</FormHelperText> : null}
+              </FormControl>
+            )}
+          />
+          <Controller
+            control={control}
+            name="username"
+            render={({ field }) => (
+              <FormControl error={Boolean(errors.username)}>
+                <InputLabel>Username</InputLabel>
+                <OutlinedInput {...field} label="Username" />
+                {errors.username ? <FormHelperText>{errors.username.message}</FormHelperText> : null}
               </FormControl>
             )}
           />

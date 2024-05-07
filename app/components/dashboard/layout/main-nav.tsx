@@ -10,7 +10,8 @@ import Tooltip from '@mui/material/Tooltip';
 import { Bell as BellIcon } from '@phosphor-icons/react/dist/ssr/Bell';
 import { List as ListIcon } from '@phosphor-icons/react/dist/ssr/List';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
-import { Users as UsersIcon } from '@phosphor-icons/react/dist/ssr/Users';
+import { User as UsersIcon } from '@phosphor-icons/react/dist/ssr/User';
+import style from "./main__nav.module.css"
 
 import { usePopover } from '../../../hooks/use-popover';
 
@@ -48,31 +49,25 @@ export function MainNav(): React.JSX.Element {
             >
               <ListIcon />
             </IconButton>
-            <Tooltip title="Search">
+            {/* <Tooltip title="Search">
               <IconButton>
                 <MagnifyingGlassIcon />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
           </Stack>
           <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
-            <Tooltip title="Contacts">
-              <IconButton>
-                <UsersIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Notifications">
-              <Badge badgeContent={4} color="success" variant="dot">
-                <IconButton>
-                  <BellIcon />
-                </IconButton>
-              </Badge>
-            </Tooltip>
-            <Avatar
+
+            
+            <div style={{position: 'relative'}}>
+            <p className={style.profile_chip}>0</p>
+            <Avatar 
               onClick={userPopover.handleOpen}
               ref={userPopover.anchorRef}
               src="/assets/avatar.png"
               sx={{ cursor: 'pointer' }}
+              style={{marginRight: "15px"}}
             />
+            </div>
           </Stack>
         </Stack>
       </Box>
