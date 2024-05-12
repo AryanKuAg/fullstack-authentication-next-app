@@ -55,7 +55,6 @@ export function SignUpForm(): React.JSX.Element {
   const onSubmit = React.useCallback(
     async (values: Values): Promise<void> => {
       setIsPending(true);
-
       // const { error } = await authClient.signUp(values);
       try{
         let response = await apiClient.post('/users/register',values);
