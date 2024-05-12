@@ -18,9 +18,11 @@ import Typography from '@mui/material/Typography';
 import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 
+
 import { paths } from '../../paths';
 import { authClient } from '../../lib/auth/client';
 import { useUser } from '../../hooks/use-user';
+import apiClient from "../../apiClient/apiClient";
 
 const schema = zod.object({
   firstName: zod.string().min(1, { message: 'First name is required' }),
@@ -54,10 +56,14 @@ export function SignUpForm(): React.JSX.Element {
     async (values: Values): Promise<void> => {
       setIsPending(true);
 
-      const { error } = await authClient.signUp(values);
-
-      if (error) {
-        setError('root', { type: 'server', message: error });
+      // const { error } = await authClient.signUp(values);
+      try{
+        let response = await apiClient.post('/users/register',values);
+        localStorage.setItem('custom-auth-token', response.data.token);
+        // console.log(response.data);
+        
+      } catch(error){
+        setError('root', { type: 'server', message: "There are some issues while sign up process" });
         setIsPending(false);
         return;
       }

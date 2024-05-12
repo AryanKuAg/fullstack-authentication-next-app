@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -14,6 +16,7 @@ import type { SxProps } from '@mui/material/styles';
 import { ArrowRight as ArrowRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowRight';
 import { DotsThreeVertical as DotsThreeVerticalIcon } from '@phosphor-icons/react/dist/ssr/DotsThreeVertical';
 import dayjs from 'dayjs';
+import apiClient from "../../../apiClient/apiClient";
 
 export interface Product {
   id: string;
@@ -22,45 +25,50 @@ export interface Product {
   updatedAt: Date;
 }
 
+export interface User {
+  username: string;
+  firstName: string;
+}
+
 export interface LatestProductsProps {
   products?: Product[];
   sx?: SxProps;
 }
 
 export function LatestProducts({ products = [], sx }: LatestProductsProps): React.JSX.Element {
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      try{
+        let response = await apiClient.get('/users/users');
+        setUsers(response.data.users);
+        
+      } catch(error){
+      }
+    })();
+  }, []);
+
   return (
     <Card sx={sx}>
-      <CardHeader title="Latest products" />
+      <CardHeader title="Users" />
       <Divider />
-      <List>
-        {products.map((product, index) => (
-          <ListItem divider={index < products.length - 1} key={product.id}>
-            <ListItemAvatar>
-              {product.image ? (
-                <Box component="img" src={product.image} sx={{ borderRadius: 1, height: '48px', width: '48px' }} />
-              ) : (
-                <Box
-                  sx={{
-                    borderRadius: 1,
-                    backgroundColor: 'var(--mui-palette-neutral-200)',
-                    height: '48px',
-                    width: '48px',
-                  }}
-                />
-              )}
-            </ListItemAvatar>
+      {users.length > 0 ? <List>
+        {users.map((user, index) => (
+          <ListItem divider={index < users.length - 1} key={user.username}>
+           
             <ListItemText
-              primary={product.name}
+              primary={user.firstName}
               primaryTypographyProps={{ variant: 'subtitle1' }}
-              secondary={`Updated ${dayjs(product.updatedAt).format('MMM D, YYYY')}`}
+              secondary={user.username}
               secondaryTypographyProps={{ variant: 'body2' }}
             />
-            <IconButton edge="end">
-              <DotsThreeVerticalIcon weight="bold" />
-            </IconButton>
+            <Button variant="contained">
+            Follow
+          </Button>
           </ListItem>
         ))}
-      </List>
+      </List> : <p style={{paddingLeft: '25px'}}>No User found!</p>}
       <Divider />
       <CardActions sx={{ justifyContent: 'flex-end' }}>
         <Button

@@ -21,6 +21,7 @@ import { z as zod } from 'zod';
 import { paths } from '../../paths';
 import { authClient } from '../../lib/auth/client';
 import { useUser } from '../../hooks/use-user';
+import apiClient from "../../apiClient/apiClient";
 
 const schema = zod.object({
   email: zod.string().min(1, { message: 'Email is required' }).email(),
@@ -51,13 +52,25 @@ export function SignInForm(): React.JSX.Element {
     async (values: Values): Promise<void> => {
       setIsPending(true);
 
-      const { error } = await authClient.signInWithPassword(values);
-
-      if (error) {
-        setError('root', { type: 'server', message: error });
+      // const { error } = await authClient.signInWithPassword(values);
+       // const { error } = await authClient.signUp(values);
+       try{
+        let response = await apiClient.post('/users/login',values);
+        localStorage.setItem('custom-auth-token', response.data.token);
+        // console.log(response.data);
+        
+      } catch(error){
+        setError('root', { type: 'server', message: "There are some issues while sign in process" });
         setIsPending(false);
         return;
       }
+
+
+      // if (error) {
+      //   setError('root', { type: 'server', message: error });
+      //   setIsPending(false);
+      //   return;
+      // }
 
       // Refresh the auth state
       await checkSession?.();
