@@ -17,6 +17,9 @@ import { ArrowRight as ArrowRightIcon } from '@phosphor-icons/react/dist/ssr/Arr
 import { DotsThreeVertical as DotsThreeVerticalIcon } from '@phosphor-icons/react/dist/ssr/DotsThreeVertical';
 import dayjs from 'dayjs';
 import apiClient from "../../../apiClient/apiClient";
+import type { RootState } from '../../../store/store'
+import { useSelector, useDispatch } from 'react-redux'
+import { remove, add } from '../../../store/counterSlice'
 
 export interface Product {
   id: string;
@@ -26,6 +29,7 @@ export interface Product {
 }
 
 export interface User {
+  _id: string, 
   username: string;
   firstName: string;
 }
@@ -37,6 +41,8 @@ export interface LatestProductsProps {
 
 export function LatestProducts({ products = [], sx }: LatestProductsProps): React.JSX.Element {
   const [users, setUsers] = useState<User[]>([]);
+  const count = useSelector((state: RootState) => state.counter.value)
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
@@ -55,7 +61,7 @@ export function LatestProducts({ products = [], sx }: LatestProductsProps): Reac
       <Divider />
       {users.length > 0 ? <List>
         {users.map((user, index) => (
-          <ListItem divider={index < users.length - 1} key={user.username}>
+          <ListItem divider={index < users.length - 1} key={user._id}>
            
             <ListItemText
               primary={user.firstName}
@@ -63,8 +69,14 @@ export function LatestProducts({ products = [], sx }: LatestProductsProps): Reac
               secondary={user.username}
               secondaryTypographyProps={{ variant: 'body2' }}
             />
-            <Button variant="contained">
-            Follow
+            <Button variant={count.has(user._id)? "outlined": "contained"} onClick={() => {
+              if(count.has(user._id)){
+                dispatch(remove(user._id));
+              }else {
+                dispatch(add(user._id));
+              }
+            }}>
+            {count.has(user._id)? "Unfollow": "Follow"}
           </Button>
           </ListItem>
         ))}

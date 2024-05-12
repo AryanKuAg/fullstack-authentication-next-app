@@ -18,9 +18,12 @@ import { usePopover } from '../../../hooks/use-popover';
 import { MobileNav } from './mobile-nav';
 import { UserPopover } from './user-popover';
 
+import type { RootState } from '../../../store/store'
+import { useSelector, useDispatch } from 'react-redux'
+
 export function MainNav(): React.JSX.Element {
   const [openNav, setOpenNav] = React.useState<boolean>(false);
-
+  const count = useSelector((state: RootState) => state.counter.value)
   const userPopover = usePopover<HTMLDivElement>();
 
   return (
@@ -49,17 +52,12 @@ export function MainNav(): React.JSX.Element {
             >
               <ListIcon />
             </IconButton>
-            {/* <Tooltip title="Search">
-              <IconButton>
-                <MagnifyingGlassIcon />
-              </IconButton>
-            </Tooltip> */}
           </Stack>
           <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
 
             
             <div style={{position: 'relative'}}>
-            <p className={style.profile_chip}>0</p>
+            <p className={style.profile_chip}>{count.size}</p>
             <Avatar 
               onClick={userPopover.handleOpen}
               ref={userPopover.anchorRef}
